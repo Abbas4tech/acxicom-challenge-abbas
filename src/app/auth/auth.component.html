@@ -1,13 +1,25 @@
 <div class="login-container">
   <section class="auth-form-container">
     <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <mat-form-field appearance="outline">
+      <mat-form-field *ngIf="!isLoginMode" appearance="outline">
         <mat-label>Username</mat-label>
         <input matInput formControlName="username" />
         <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
           Username is <strong>required</strong>.</mat-error
         >
         <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" />
+        <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+          Email is <strong>required</strong>.</mat-error
+        >
+        <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+          Please enter a valid email</mat-error
+        >
+        <mat-icon matSuffix>email</mat-icon>
       </mat-form-field>
 
       <mat-form-field appearance="outline" hideRequiredMarker="false">
@@ -35,23 +47,30 @@
         </button>
       </mat-form-field>
 
-      <div class="button-group">
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-          [disabled]="loginForm.invalid"
-        >
-          Login
-        </button>
-        <button
-          mat-stroked-button
-          color="basic"
-          type="button"
-          (click)="clearForm()"
-        >
-          Clear
-        </button>
+      <div>
+        <div class="button-group">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="loginForm.invalid"
+          >
+            Login
+          </button>
+          <button
+            mat-stroked-button
+            color="basic"
+            type="button"
+            (click)="clearForm()"
+          >
+            Clear
+          </button>
+        </div>
+        <div>
+          <button type="button" (click)="toggleMode()" mat-button>
+            Switch to {{ isLoginMode ? "Signup" : "Login" }}
+          </button>
+        </div>
       </div>
     </form>
     <div class="footer-links">

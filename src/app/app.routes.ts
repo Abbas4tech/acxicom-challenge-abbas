@@ -1,4 +1,16 @@
 import { Routes } from '@angular/router';
+import {
+  AuthPipe,
+  canActivate,
+  redirectLoggedInTo,
+  redirectUnauthorizedTo,
+} from '@angular/fire/auth-guard';
+
+// Define your auth pipes
+const redirectUnauthorizedToLogin = (): AuthPipe =>
+  redirectUnauthorizedTo(['auth']);
+const redirectLoggedInToDashboard = (): AuthPipe =>
+  redirectLoggedInTo(['dashboard/contacts']);
 
 export const routes: Routes = [
   {
@@ -6,6 +18,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./auth/auth.component').then((m) => m.LoginScreen),
     title: 'Login',
+    ...canActivate(redirectLoggedInToDashboard),
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
@@ -15,6 +28,7 @@ export const routes: Routes = [
         (m) => m.DashboardComponent
       ),
     title: 'Dashboard',
+    ...canActivate(redirectUnauthorizedToLogin),
   },
   { path: '**', redirectTo: 'login' },
 ];

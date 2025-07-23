@@ -16,6 +16,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { AuthService } from '../../auth/services/auth.service';
+import { User } from '@angular/fire/auth';
 
 interface UserProfile {
   id: string;
@@ -75,8 +77,12 @@ export class DashboardComponent implements AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
+  user!: User;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private _authService: AuthService) {
+    this._authService.user.subscribe((user) => {
+      if (user) this.user = user;
+    });
     const mockUsers: UserProfile[] = [
       {
         id: '1',
@@ -147,7 +153,7 @@ export class DashboardComponent implements AfterViewInit {
         photoUrl: URL.createObjectURL(this.selectedFile),
         photoFile: this.selectedFile,
       };
-
+      console.log(this.profileForm.value);
       this.dataSource.data = [...this.dataSource.data, newUser];
       this.resetForm();
       this.showForm = false;
@@ -169,7 +175,8 @@ export class DashboardComponent implements AfterViewInit {
     }
   }
 
-  logout() {
+  async logout() {
     console.log('User logged out');
+    await this._authService.logout();
   }
 }

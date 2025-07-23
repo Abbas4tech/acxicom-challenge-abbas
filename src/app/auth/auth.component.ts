@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'auth-screen',
@@ -33,21 +34,29 @@ import { Router } from '@angular/router';
 export class LoginScreen {
   loginForm: FormGroup<{
     username: FormControl<string | null>;
+    email: FormControl<string | null>;
     password: FormControl<string | null>;
   }>;
+  isLoginMode = false;
 
   hide = signal(true);
 
-  constructor(private _fb: FormBuilder, private _router: Router) {
+  constructor(
+    private _fb: FormBuilder,
+    private _router: Router,
+    private _authService: AuthService
+  ) {
     this.loginForm = this.createAuthForm();
   }
 
   private createAuthForm() {
     return this._fb.group<{
       username: FormControl<string | null>;
+      email: FormControl<string | null>;
       password: FormControl<string | null>;
     }>({
       username: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [
         Validators.required,
         Validators.minLength(8),
@@ -59,9 +68,34 @@ export class LoginScreen {
     this.hide.set(!this.hide());
   }
 
-  onSubmit() {
-    console.log('Form Submitted', this.loginForm.value);
-    this._router.navigate(['dashboard']);
+  toggleMode(): void {
+    this.isLoginMode = !this.isLoginMode;
+    if (this.isLoginMode) {
+      this.loginForm.removeControl('username' as never, { emitEvent: false });
+    } else {
+      this.loginForm.addControl(
+        'username',
+        new FormControl('', [Validators.required, Validators.maxLength(15)])
+      );
+    }
+  }
+
+  async onSubmit() {
+    if (this.loginForm.invalid) {
+      return;
+    }
+    if (this.isLoginMode && this.loginForm.value) {
+      await this._authService.login(
+        this.loginForm.value.email as string,
+        this.loginForm.value.password as string
+      );
+    } else {
+      await this._authService.signup(
+        this.loginForm.value.username as string,
+        this.loginForm.value.email as string,
+        this.loginForm.value.password as string
+      );
+    }
   }
 
   clearForm() {
