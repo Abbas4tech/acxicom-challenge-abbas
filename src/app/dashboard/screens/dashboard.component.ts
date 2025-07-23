@@ -24,6 +24,8 @@ interface UserProfile {
   address: string;
   skills: string[];
   hobbies: string;
+  photoUrl?: string;
+  photoFile?: File;
 }
 
 @Component({
@@ -47,12 +49,14 @@ interface UserProfile {
 export class DashboardComponent implements AfterViewInit {
   displayedColumns: string[] = [
     'id',
+    'photo',
     'name',
     'mobileNo',
     'address',
     'skills',
     'hobbies',
   ];
+  selectedFile: File | null = null;
   dataSource: MatTableDataSource<UserProfile>;
   profileForm: FormGroup;
   showForm = false;
@@ -81,6 +85,8 @@ export class DashboardComponent implements AfterViewInit {
         address: '123 Main St, New York',
         skills: ['Angular', 'TypeScript'],
         hobbies: 'Reading, Hiking',
+        photoUrl:
+          'https://imgs.search.brave.com/SItJevoCA4ls70puLX1S9R5GGmpNLVUj4nlYaNsFIac/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmV0/c3lzdGF0aWMuY29t/LzIzMTI1MjIyL3Iv/aWwvNmYzNmQ3LzI4/NzcxMTUyNTEvaWxf/NjAweDYwMC4yODc3/MTE1MjUxXzFtaWcu/anBn',
       },
       {
         id: '2',
@@ -89,6 +95,8 @@ export class DashboardComponent implements AfterViewInit {
         address: '456 Oak Ave, Boston',
         skills: ['React', 'JavaScript'],
         hobbies: 'Photography',
+        photoUrl:
+          'https://imgs.search.brave.com/SItJevoCA4ls70puLX1S9R5GGmpNLVUj4nlYaNsFIac/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmV0/c3lzdGF0aWMuY29t/LzIzMTI1MjIyL3Iv/aWwvNmYzNmQ3LzI4/NzcxMTUyNTEvaWxf/NjAweDYwMC4yODc3/MTE1MjUxXzFtaWcu/anBn',
       },
       {
         id: '3',
@@ -97,6 +105,8 @@ export class DashboardComponent implements AfterViewInit {
         address: '789 Pine Rd, Chicago',
         skills: ['Node.js', 'Python'],
         hobbies: 'Gaming, Cooking',
+        photoUrl:
+          'https://imgs.search.brave.com/SItJevoCA4ls70puLX1S9R5GGmpNLVUj4nlYaNsFIac/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmV0/c3lzdGF0aWMuY29t/LzIzMTI1MjIyL3Iv/aWwvNmYzNmQ3LzI4/NzcxMTUyNTEvaWxf/NjAweDYwMC4yODc3/MTE1MjUxXzFtaWcu/anBn',
       },
     ];
 
@@ -116,14 +126,26 @@ export class DashboardComponent implements AfterViewInit {
       address: ['', Validators.required],
       skills: [[], Validators.required],
       hobbies: ['', Validators.required],
+      photo: ['', Validators.required],
     });
   }
 
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      this.profileForm.patchValue({ photo: file });
+      this.profileForm.get('photo')?.updateValueAndValidity();
+    }
+  }
+
   addUser() {
-    if (this.profileForm.valid) {
+    if (this.profileForm.valid && this.selectedFile) {
       const newUser: UserProfile = {
         id: (this.dataSource.data.length + 1).toString(),
         ...this.profileForm.value,
+        photoUrl: URL.createObjectURL(this.selectedFile),
+        photoFile: this.selectedFile,
       };
 
       this.dataSource.data = [...this.dataSource.data, newUser];
@@ -135,6 +157,7 @@ export class DashboardComponent implements AfterViewInit {
   resetForm() {
     this.profileForm.reset();
     this.profileForm.markAsUntouched();
+    this.selectedFile = null;
   }
 
   applyFilter(event: Event) {
