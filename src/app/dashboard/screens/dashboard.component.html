@@ -1,65 +1,154 @@
-<header>
-  <h1>Hello User</h1>
+<div class="container">
+  <header>
+    <h1>User Profile Manager</h1>
+    <nav class="header-actions">
+      <button mat-raised-button color="primary" (click)="showForm = !showForm">
+        {{ showForm ? "Hide Form" : "Add User" }}
+      </button>
+      <button matButton="outlined" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    </nav>
+  </header>
 
-  <nav class="header-actions">
-    <button mat-flat-button color="primary">Add User</button>
-    <button matButton="outlined">
-      <mat-icon>logout</mat-icon>
-      Logout
-    </button>
-  </nav>
-</header>
+  <main>
+    <section class="user-form" *ngIf="showForm">
+      <h2>User Profile Form</h2>
+      <form [formGroup]="profileForm" (ngSubmit)="addUser()">
+        <div class="form-row">
+          <mat-form-field hideRequiredMarker="false" appearance="outline">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" required />
+            <mat-error *ngIf="profileForm.get('name')?.hasError('required')">
+              Name is required
+            </mat-error>
+          </mat-form-field>
 
-<main>
-  <div class="user-table">
-    <mat-form-field>
-      <mat-label>Filter</mat-label>
-      <input
-        matInput
-        (keyup)="applyFilter($event)"
-        placeholder="Ex. Mia"
-        #input
-      />
-    </mat-form-field>
-    <table mat-table [dataSource]="dataSource" matSort>
-      <!-- ID Column -->
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
-        <td mat-cell *matCellDef="let row">{{ row.id }}</td>
-      </ng-container>
+          <mat-form-field appearance="outline">
+            <mat-label>Mobile No</mat-label>
+            <input matInput formControlName="mobileNo" required />
+            <mat-error
+              *ngIf="profileForm.get('mobileNo')?.hasError('required')"
+            >
+              Mobile number is required
+            </mat-error>
+          </mat-form-field>
+        </div>
 
-      <!-- Progress Column -->
-      <ng-container matColumnDef="progress">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Progress</th>
-        <td mat-cell *matCellDef="let row">{{ row.progress }}%</td>
-      </ng-container>
+        <mat-form-field appearance="outline">
+          <mat-label>Address</mat-label>
+          <textarea
+            matInput
+            formControlName="address"
+            rows="2"
+            required
+          ></textarea>
+          <mat-error *ngIf="profileForm.get('address')?.hasError('required')">
+            Address is required
+          </mat-error>
+        </mat-form-field>
 
-      <!-- Name Column -->
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
-        <td mat-cell *matCellDef="let row">{{ row.name }}</td>
-      </ng-container>
+        <mat-form-field appearance="outline">
+          <mat-label>Skills</mat-label>
+          <mat-select formControlName="skills" multiple required>
+            <mat-option *ngFor="let skill of availableSkills" [value]="skill">{{
+              skill
+            }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="profileForm.get('skills')?.hasError('required')">
+            At least one skill is required
+          </mat-error>
+        </mat-form-field>
 
-      <!-- Fruit Column -->
-      <ng-container matColumnDef="fruit">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>Fruit</th>
-        <td mat-cell *matCellDef="let row">{{ row.fruit }}</td>
-      </ng-container>
+        <mat-form-field appearance="outline">
+          <mat-label>Hobbies</mat-label>
+          <input matInput formControlName="hobbies" required />
+          <mat-hint>Separate multiple hobbies with commas</mat-hint>
+          <mat-error *ngIf="profileForm.get('hobbies')?.hasError('required')">
+            Hobbies are required
+          </mat-error>
+        </mat-form-field>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <div class="form-actions">
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="profileForm.invalid"
+          >
+            Submit
+          </button>
+          <button mat-stroked-button type="button" (click)="resetForm()">
+            Reset
+          </button>
+        </div>
+      </form>
+    </section>
 
-      <!-- Row shown when there is no matching data. -->
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4">
-          No data matching the filter "{{ input.value }}"
-        </td>
-      </tr>
-    </table>
+    <div class="user-table">
+      <mat-form-field>
+        <mat-label>Filter</mat-label>
+        <input
+          matInput
+          (keyup)="applyFilter($event)"
+          placeholder="Search users"
+          #input
+        />
+      </mat-form-field>
 
-    <mat-paginator
-      [pageSizeOptions]="[5, 10, 25, 100]"
-      aria-label="Select page of users"
-    ></mat-paginator>
-  </div>
-</main>
+      <table mat-table [dataSource]="dataSource" matSort>
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+          <td mat-cell *matCellDef="let user">{{ user.id }}</td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let user">{{ user.name }}</td>
+        </ng-container>
+
+        <!-- Mobile Column -->
+        <ng-container matColumnDef="mobileNo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Mobile</th>
+          <td mat-cell *matCellDef="let user">{{ user.mobileNo }}</td>
+        </ng-container>
+
+        <!-- Address Column -->
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Address</th>
+          <td mat-cell *matCellDef="let user">{{ user.address }}</td>
+        </ng-container>
+
+        <!-- Skills Column -->
+        <ng-container matColumnDef="skills">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Skills</th>
+          <td mat-cell *matCellDef="let user">{{ user.skills.join(", ") }}</td>
+        </ng-container>
+
+        <!-- Hobbies Column -->
+        <ng-container matColumnDef="hobbies">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Hobbies</th>
+          <td mat-cell *matCellDef="let user">{{ user.hobbies }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="6">
+            No users found matching "{{ input.value }}"
+          </td>
+        </tr>
+      </table>
+
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 25]"
+        aria-label="Select page of users"
+      ></mat-paginator>
+    </div>
+  </main>
+</div>
