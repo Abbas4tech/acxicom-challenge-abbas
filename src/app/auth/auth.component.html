@@ -1,64 +1,65 @@
-<div class="login-container mat-elevation-z5">
-  <div class="login-header">
-    <h1 class="project-name">User Profile Manager</h1>
-    <div class="logo-animation"></div>
-  </div>
+<div class="login-container">
+  <section class="auth-form-container">
+    <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" />
+        <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
+          Username is <strong>required</strong>.</mat-error
+        >
+        <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
 
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="outline">
-      <mat-label>Username</mat-label>
-      <input matInput formControlName="username" />
-      <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
-        Username is required.</mat-error
-      >
-      <mat-icon matSuffix>person</mat-icon>
-    </mat-form-field>
+      <mat-form-field appearance="outline" hideRequiredMarker="false">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          [type]="hide() ? 'password' : 'text'"
+          formControlName="password"
+        />
+        <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+          Password is <strong>required</strong>.
+        </mat-error>
+        <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
+          Password must be at least <strong>8 characters long</strong>.
+        </mat-error>
+        <button
+          matIconButton
+          matSuffix
+          type="button"
+          (click)="togglePasswordShow($event)"
+          [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide()"
+        >
+          <mat-icon>{{ hide() ? "visibility_off" : "visibility" }}</mat-icon>
+        </button>
+      </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Password</mat-label>
-      <input
-        matInput
-        [type]="hide() ? 'password' : 'text'"
-        formControlName="password"
-      />
-      <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
-        Password is required.
-      </mat-error>
-      <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
-        Password must be at least 8 characters long.
-      </mat-error>
-      <button
-        matIconButton
-        matSuffix
-        (click)="togglePasswordShow($event)"
-        [attr.aria-label]="'Hide password'"
-        [attr.aria-pressed]="hide()"
-      >
-        <mat-icon>{{ hide() ? "visibility_off" : "visibility" }}</mat-icon>
-      </button>
-    </mat-form-field>
-
-    <div class="button-group">
-      <button
-        mat-raised-button
-        color="primary"
-        type="submit"
-        [disabled]="loginForm.invalid"
-      >
-        Login
-      </button>
-      <button
-        mat-stroked-button
-        color="basic"
-        type="button"
-        (click)="clearForm()"
-      >
-        Clear
-      </button>
+      <div class="button-group">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="loginForm.invalid"
+        >
+          Login
+        </button>
+        <button
+          mat-stroked-button
+          color="basic"
+          type="button"
+          (click)="clearForm()"
+        >
+          Clear
+        </button>
+      </div>
+    </form>
+    <div class="footer-links">
+      <a href="#" class="forgot-password">Forgot Password?</a>
     </div>
-  </form>
+  </section>
 
-  <div class="footer-links">
-    <a href="#" class="forgot-password">Forgot Password?</a>
+  <div class="login-header">
+    <h1 class="">User Profile Manager</h1>
   </div>
 </div>

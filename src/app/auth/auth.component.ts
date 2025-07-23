@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'auth-screen',
@@ -27,6 +28,7 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule,
   ],
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginScreen {
   loginForm: FormGroup<{
@@ -36,7 +38,7 @@ export class LoginScreen {
 
   hide = signal(true);
 
-  constructor(private _fb: FormBuilder) {
+  constructor(private _fb: FormBuilder, private _router: Router) {
     this.loginForm = this.createAuthForm();
   }
 
@@ -55,12 +57,11 @@ export class LoginScreen {
 
   togglePasswordShow(event: MouseEvent) {
     this.hide.set(!this.hide());
-    event.stopPropagation();
-    event.preventDefault();
   }
 
   onSubmit() {
     console.log('Form Submitted', this.loginForm.value);
+    this._router.navigate(['dashboard']);
   }
 
   clearForm() {

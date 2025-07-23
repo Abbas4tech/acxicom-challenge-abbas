@@ -1,8 +1,20 @@
 import { Routes } from '@angular/router';
-import { LoginScreen } from './auth/auth.component';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginScreen },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./auth/auth.component').then((m) => m.LoginScreen),
+    title: 'Login',
+  },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
+  {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./dashboard/screens/dashboard.component').then(
+        (m) => m.DashboardComponent
+      ),
+    title: 'Dashboard',
+  },
   { path: '**', redirectTo: 'login' },
 ];
