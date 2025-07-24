@@ -19,7 +19,7 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Mobile No</mat-label>
-        <input matInput formControlName="mobileNo" required />
+        <input matInput formControlName="mobileNo" type="number" required />
         <mat-error *ngIf="profileForm.get('mobileNo')?.hasError('required')">
           Mobile number is required
         </mat-error>
@@ -58,40 +58,60 @@
       </mat-error>
     </mat-form-field>
 
+    <!-- Enhanced Photo Upload Section -->
     <div class="photo-upload">
-      <mat-label>Photo</mat-label>
-      <div class="upload-container">
-        <button mat-stroked-button type="button" (click)="fileInput.click()">
-          <mat-icon>cloud_upload</mat-icon>
-          {{ selectedFile?.name || "Choose a file" }}
-        </button>
+      <div class="upload-container" [class.invalid]="showPhotoError()">
         <input
           #fileInput
           type="file"
           (change)="onFileSelected($event)"
-          accept="image/*,.pdf"
+          accept="image/*"
           style="display: none"
         />
+
+        <div
+          *ngIf="!previewUrl"
+          class="upload-area"
+          (click)="fileInput.click()"
+        >
+          <mat-icon class="upload-icon">cloud_upload</mat-icon>
+          <div class="upload-text">Click to upload photo</div>
+          <div class="upload-hint">JPG or PNG (max 2MB)</div>
+        </div>
+
+        <div *ngIf="previewUrl" class="preview-container">
+          <div style="display: flex; align-items: center; gap: 1rem">
+            <img [src]="previewUrl" alt="Preview" class="preview-image" />
+            <span>{{ profileForm.get("photo")?.value?.name }}</span>
+          </div>
+
+          <div class="preview-actions">
+            <button
+              matTooltip="Delete Selction"
+              matIconButton
+              color="warn"
+              (click)="removePhoto($event)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button
+              matIconButton
+              matTooltip="Change photo"
+              (click)="fileInput.click(); $event.stopPropagation()"
+            >
+              <mat-icon>camera_alt</mat-icon>
+            </button>
+          </div>
+        </div>
       </div>
-      <mat-error
-        *ngIf="
-          profileForm.get('photo')?.hasError('required') &&
-          profileForm.get('photo')?.touched
-        "
-      >
-        Photo is required
+      <mat-error *ngIf="showPhotoError()">
+        <mat-icon class="error-icon">error</mat-icon>
+        {{ photoErrorMessage }}
       </mat-error>
     </div>
 
     <div class="profile-form__actions">
-      <button
-        mat-flat-button
-        color="primary"
-        type="submit"
-        [disabled]="profileForm.invalid"
-      >
-        Submit
-      </button>
+      <button mat-flat-button color="primary" type="submit">Submit</button>
 
       <button (click)="closeForm()" type="button" matButton="outlined">
         Cancel
