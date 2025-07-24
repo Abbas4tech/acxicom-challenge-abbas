@@ -6,11 +6,10 @@ import {
   redirectUnauthorizedTo,
 } from '@angular/fire/auth-guard';
 
-// Define your auth pipes
 const redirectUnauthorizedToLogin = (): AuthPipe =>
-  redirectUnauthorizedTo(['auth']);
+  redirectUnauthorizedTo(['login']);
 const redirectLoggedInToDashboard = (): AuthPipe =>
-  redirectLoggedInTo(['dashboard/contacts']);
+  redirectLoggedInTo(['dashboard']);
 
 export const routes: Routes = [
   {

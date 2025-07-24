@@ -1,11 +1,4 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-
+import { Component, ViewChild, AfterViewInit, inject } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -16,8 +9,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDialog } from '@angular/material/dialog';
+
 import { AuthService } from '../../auth/services/auth.service';
 import { User } from '@angular/fire/auth';
+import { ProfileFormComponent } from '../components/profile-form/profile-form.component';
 
 interface UserProfile {
   id: string;
@@ -40,7 +36,6 @@ interface UserProfile {
     MatPaginatorModule,
     MatSortModule,
     MatTableModule,
-    ReactiveFormsModule,
     CommonModule,
     MatIconModule,
     MatOptionModule,
@@ -58,10 +53,7 @@ export class DashboardComponent implements AfterViewInit {
     'skills',
     'hobbies',
   ];
-  selectedFile: File | null = null;
   dataSource: MatTableDataSource<UserProfile>;
-  profileForm: FormGroup;
-  showForm = false;
   availableSkills: string[] = [
     'Angular',
     'React',
@@ -75,11 +67,13 @@ export class DashboardComponent implements AfterViewInit {
     'C#',
   ];
 
+  readonly dialog = inject(MatDialog);
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   user!: User;
 
-  constructor(private fb: FormBuilder, private _authService: AuthService) {
+  constructor(private _authService: AuthService) {
     this._authService.user.subscribe((user) => {
       if (user) this.user = user;
     });
@@ -117,53 +111,11 @@ export class DashboardComponent implements AfterViewInit {
     ];
 
     this.dataSource = new MatTableDataSource(mockUsers);
-    this.profileForm = this.createForm();
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-  }
-
-  createForm(): FormGroup {
-    return this.fb.group({
-      name: ['', Validators.required],
-      mobileNo: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      address: ['', Validators.required],
-      skills: [[], Validators.required],
-      hobbies: ['', Validators.required],
-      photo: ['', Validators.required],
-    });
-  }
-
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
-      this.profileForm.patchValue({ photo: file });
-      this.profileForm.get('photo')?.updateValueAndValidity();
-    }
-  }
-
-  addUser() {
-    if (this.profileForm.valid && this.selectedFile) {
-      const newUser: UserProfile = {
-        id: (this.dataSource.data.length + 1).toString(),
-        ...this.profileForm.value,
-        photoUrl: URL.createObjectURL(this.selectedFile),
-        photoFile: this.selectedFile,
-      };
-      console.log(this.profileForm.value);
-      this.dataSource.data = [...this.dataSource.data, newUser];
-      this.resetForm();
-      this.showForm = false;
-    }
-  }
-
-  resetForm() {
-    this.profileForm.reset();
-    this.profileForm.markAsUntouched();
-    this.selectedFile = null;
   }
 
   applyFilter(event: Event) {
@@ -173,6 +125,15 @@ export class DashboardComponent implements AfterViewInit {
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
+  }
+
+  openProfileForm() {
+    // Logic to open the profile form modal or navigate to the profile form page
+    console.log('Open Profile Form');
+    const dialogRef = this.dialog.open(ProfileFormComponent, {
+      width: '90%',
+      maxWidth: '30rem',
+    });
   }
 
   async logout() {

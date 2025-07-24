@@ -1,29 +1,55 @@
 <div class="login-container">
+  <header>
+    <h1 class="">User Profile Manager</h1>
+  </header>
+
   <section class="auth-form-container">
+    <h2 class="heading">Login</h2>
+
     <form class="auth-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <mat-form-field *ngIf="!isLoginMode" appearance="outline">
+      <mat-form-field *ngIf="!isLoginMode" appearance="fill">
         <mat-label>Username</mat-label>
         <input matInput formControlName="username" />
         <mat-error *ngIf="loginForm.get('username')?.hasError('required')">
           Username is <strong>required</strong>.</mat-error
         >
-        <mat-icon matSuffix>person</mat-icon>
+        <button
+          matSuffix
+          matIconButton
+          *ngIf="loginForm.get('username')?.value"
+          type="button"
+          aria-label="Clear"
+          (click)="loginForm.get('username')?.setValue('')"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
       </mat-form-field>
 
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="fill">
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" />
+        <button
+          *ngIf="loginForm.get('email')?.value"
+          matSuffix
+          matIconButton
+          type="button"
+          aria-label="Clear"
+          (click)="loginForm.get('email')?.setValue('')"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
         <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
           Email is <strong>required</strong>.</mat-error
         >
         <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
           Please enter a valid email</mat-error
         >
-        <mat-icon matSuffix>email</mat-icon>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" hideRequiredMarker="false">
-        <mat-label>Password</mat-label>
+      <mat-form-field appearance="fill">
+        <mat-label>{{
+          isLoginMode ? "Password" : "Choose Password"
+        }}</mat-label>
         <input
           matInput
           [type]="hide() ? 'password' : 'text'"
@@ -35,50 +61,31 @@
         <mat-error *ngIf="loginForm.get('password')?.hasError('minlength')">
           Password must be at least <strong>8 characters long</strong>.
         </mat-error>
-        <button
-          matIconButton
-          matSuffix
-          type="button"
-          (click)="togglePasswordShow($event)"
-          [attr.aria-label]="'Hide password'"
-          [attr.aria-pressed]="hide()"
-        >
-          <mat-icon>{{ hide() ? "visibility_off" : "visibility" }}</mat-icon>
-        </button>
       </mat-form-field>
 
-      <div>
+      <div class="auth-form__actions">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="submit-button"
+          [disabled]="loginForm.invalid"
+        >
+          {{ isLoginMode ? "Login" : "Signup" }}
+          <mat-icon>login</mat-icon>
+        </button>
         <div class="button-group">
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="loginForm.invalid"
-          >
-            Login
-          </button>
-          <button
-            mat-stroked-button
-            color="basic"
-            type="button"
-            (click)="clearForm()"
-          >
-            Clear
-          </button>
-        </div>
-        <div>
-          <button type="button" (click)="toggleMode()" mat-button>
+          <button type="button" (click)="toggleMode()" mat-raised-button>
             Switch to {{ isLoginMode ? "Signup" : "Login" }}
+          </button>
+
+          <button mat-raised-button type="button" color="primary">
+            Login with Google<mat-icon>account_box</mat-icon>
           </button>
         </div>
       </div>
     </form>
-    <div class="footer-links">
-      <a href="#" class="forgot-password">Forgot Password?</a>
-    </div>
   </section>
 
-  <div class="login-header">
-    <h1 class="">User Profile Manager</h1>
-  </div>
+  <div class="login-header"></div>
 </div>

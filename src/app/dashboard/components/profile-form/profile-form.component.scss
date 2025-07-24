@@ -1,0 +1,70 @@
+.profile-form {
+  border-radius: 8px 8px 0 0;
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    display: flex;
+    padding: 1rem;
+    background-color: #3f51b5;
+    color: #fff;
+  }
+
+  &__form-section {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 100%;
+
+    .form-group__half {
+      display: flex;
+      gap: 1rem;
+
+      & > * {
+        width: 50%;
+      }
+    }
+
+    .photo-upload {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .photo-preview {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+          width: 100%;
+          height: auto;
+        }
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-self: flex-end;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    max-width: 30rem;
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+  }
+}

@@ -97,10 +97,4 @@ export class LoginScreen {
       );
     }
   }
-
-  clearForm() {
-    this.loginForm.reset();
-    this.loginForm.markAsPristine();
-    this.loginForm.markAsUntouched();
-  }
 }

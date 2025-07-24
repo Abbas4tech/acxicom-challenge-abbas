@@ -1,0 +1,101 @@
+<section class="profile-form">
+  <header class="profile-form__header">
+    <h3>Add Profile user</h3>
+  </header>
+
+  <form
+    [formGroup]="profileForm"
+    class="profile-form__form-section"
+    (ngSubmit)="addUser()"
+  >
+    <div class="form-group__half">
+      <mat-form-field hideRequiredMarker="false" appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" required />
+        <mat-error *ngIf="profileForm.get('name')?.hasError('required')">
+          Name is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Mobile No</mat-label>
+        <input matInput formControlName="mobileNo" required />
+        <mat-error *ngIf="profileForm.get('mobileNo')?.hasError('required')">
+          Mobile number is required
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Address</mat-label>
+      <textarea matInput formControlName="address" rows="2" required></textarea>
+      <mat-error *ngIf="profileForm.get('address')?.hasError('required')">
+        Address is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Skills</mat-label>
+      <mat-select formControlName="skills" multiple required>
+        <mat-option *ngFor="let skill of availableSkills" [value]="skill">{{
+          skill
+        }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="profileForm.get('skills')?.hasError('required')">
+        At least one skill is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Hobbies</mat-label>
+      <input matInput formControlName="hobbies" required />
+      <mat-hint>Separate multiple hobbies with commas</mat-hint>
+      <mat-error *ngIf="profileForm.get('hobbies')?.hasError('required')">
+        Hobbies are required
+      </mat-error>
+    </mat-form-field>
+
+    <div class="photo-upload">
+      <mat-label>Photo</mat-label>
+      <div class="upload-container">
+        <button mat-stroked-button type="button" (click)="fileInput.click()">
+          <mat-icon>cloud_upload</mat-icon>
+          Choose File
+        </button>
+        <span *ngIf="selectedFile?.name" class="file-name">{{
+          selectedFile?.name
+        }}</span>
+        <input
+          #fileInput
+          type="file"
+          (change)="onFileSelected($event)"
+          accept="image/*,.pdf"
+          style="display: none"
+        />
+      </div>
+      <mat-error
+        *ngIf="
+          profileForm.get('photo')?.hasError('required') &&
+          profileForm.get('photo')?.touched
+        "
+      >
+        Photo is required
+      </mat-error>
+    </div>
+
+    <div class="profile-form__actions">
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="profileForm.invalid"
+      >
+        Submit
+      </button>
+
+      <button (click)="closeForm()" type="button" matButton="outlined">
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
