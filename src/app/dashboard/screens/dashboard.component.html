@@ -44,15 +44,11 @@
                 [href]="user.photoUrl"
                 target="_blank"
               >
-                <img
-                  *ngIf="user.photoUrl.includes('.jpg'); else pdfIcon"
-                  [src]="user.photoUrl"
-                  height="25"
-                  width="25"
-                  alt=""
-                />
+                <mat-icon *ngIf="user.photoUrl.includes('.pdf'); else pdfIcon"
+                  >picture_as_pdf</mat-icon
+                >
                 <ng-template #pdfIcon>
-                  <mat-icon>picture_as_pdf</mat-icon>
+                  <img [src]="user.photoUrl" height="25" width="25" alt="" />
                 </ng-template>
               </a>
               <span *ngIf="!user.photoUrl">-</span>
