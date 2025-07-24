@@ -60,18 +60,6 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   ];
   dataSource: MatTableDataSource<UserProfile> =
     new MatTableDataSource<UserProfile>([]);
-  availableSkills: string[] = [
-    'Angular',
-    'React',
-    'Vue',
-    'JavaScript',
-    'TypeScript',
-    'HTML/CSS',
-    'Node.js',
-    'Python',
-    'Java',
-    'C#',
-  ];
 
   private destroy$ = new Subject<void>();
   readonly dialog = inject(MatDialog);
@@ -146,15 +134,9 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   }
 
   openProfileForm() {
-    const currentProfile = this.dataSource.data[0] || null;
-
     const dialogRef = this.dialog.open(ProfileFormComponent, {
       width: '90%',
       maxWidth: '35rem',
-      data: {
-        profile: currentProfile,
-        skills: this.availableSkills,
-      },
     });
 
     dialogRef
