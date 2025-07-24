@@ -19,6 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { AuthService } from '../../auth/services/auth.service';
 import { User } from '@angular/fire/auth';
@@ -44,6 +45,7 @@ import { Subject, takeUntil } from 'rxjs';
     MatButtonModule,
     MatSelectModule,
     MatProgressSpinnerModule,
+    MatTooltipModule,
   ],
 })
 export class DashboardComponent implements AfterViewInit, OnDestroy {
@@ -98,15 +100,6 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-
-    this.dataSource.sortingDataAccessor = (item, property) => {
-      switch (property) {
-        case 'skills':
-          return item.skills.join(', ');
-        default:
-          return (item as any)[property];
-      }
-    };
   }
 
   ngOnDestroy() {
@@ -128,21 +121,7 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (profiles: UserProfile[]) => {
-          if (profiles && profiles.length) {
-            this.dataSource.data = profiles.map((profile: any) => ({
-              id: profile.id,
-              name: profile.name,
-              mobileNo: profile.mobileNo,
-              address: profile.address,
-              skills: profile.skills,
-              hobbies: profile.hobbies,
-              photoUrl: profile.photoUrl,
-              lastUpdated: profile.lastUpdated,
-            }));
-          } else {
-            this.dataSource.data = [];
-          }
-
+          this.dataSource.data = profiles && profiles.length ? profiles : [];
           this.loading = false;
           this.cdr.detectChanges();
         },
@@ -171,7 +150,7 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
 
     const dialogRef = this.dialog.open(ProfileFormComponent, {
       width: '90%',
-      maxWidth: '30rem',
+      maxWidth: '35rem',
       data: {
         profile: currentProfile,
         skills: this.availableSkills,

@@ -23,6 +23,9 @@
         <mat-error *ngIf="profileForm.get('mobileNo')?.hasError('required')">
           Mobile number is required
         </mat-error>
+        <mat-error *ngIf="profileForm.get('mobileNo')?.hasError('pattern')">
+          Mobile number should be 10 digits
+        </mat-error>
       </mat-form-field>
     </div>
 
@@ -60,11 +63,8 @@
       <div class="upload-container">
         <button mat-stroked-button type="button" (click)="fileInput.click()">
           <mat-icon>cloud_upload</mat-icon>
-          Choose File
+          {{ selectedFile?.name || "Choose a file" }}
         </button>
-        <span *ngIf="selectedFile?.name" class="file-name">{{
-          selectedFile?.name
-        }}</span>
         <input
           #fileInput
           type="file"

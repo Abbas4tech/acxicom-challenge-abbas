@@ -3,7 +3,8 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background-color: var(--mat-primary);
+  background-color: var(--mat-primary, #3f51b5);
+  color: #fff;
 }
 
 nav {

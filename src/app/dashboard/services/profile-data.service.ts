@@ -71,7 +71,7 @@ export class ProfileDataService {
     return from(uploadBytes(fileRef, profileData.photo)).pipe(
       switchMap(() => getDownloadURL(fileRef)),
       switchMap((photoUrl) => {
-        const profileDoc: UserProfile = {
+        const profileDoc: Omit<UserProfile, 'id'> = {
           name: profileData.name,
           mobileNo: profileData.mobileNo,
           address: profileData.address,

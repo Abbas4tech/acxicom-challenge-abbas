@@ -10,6 +10,7 @@ export type ProfileFormData = {
 };
 
 export type UserProfile = {
+  id: string;
   name: string;
   mobileNo: string;
   address: string;

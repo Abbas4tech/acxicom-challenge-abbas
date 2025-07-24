@@ -2,10 +2,11 @@
   <header>
     <h1>Welcome {{ user.displayName }}</h1>
     <nav class="header-actions">
-      <button mat-raised-button color="primary" (click)="openProfileForm()">
+      <button mat-raised-button (click)="openProfileForm()">
         Add Profile
+        <mat-icon>add</mat-icon>
       </button>
-      <button matButton="outlined" (click)="logout()">
+      <button matButton="filled" (click)="logout()">
         <mat-icon>logout</mat-icon>
         Logout
       </button>
@@ -22,7 +23,7 @@
           <input
             matInput
             (keyup)="applyFilter($event)"
-            placeholder="Search users"
+            placeholder="Search profile users"
             #input
           />
         </mat-form-field>
@@ -38,12 +39,21 @@
             <th mat-header-cell *matHeaderCellDef>Photo</th>
             <td mat-cell *matCellDef="let user">
               <a
+                matTooltip="Click to open!"
                 *ngIf="user.photoUrl"
                 [href]="user.photoUrl"
                 target="_blank"
-                matTooltip="View photo"
               >
-                <mat-icon>image</mat-icon>
+                <img
+                  *ngIf="user.photoUrl.includes('.jpg'); else pdfIcon"
+                  [src]="user.photoUrl"
+                  height="25"
+                  width="25"
+                  alt=""
+                />
+                <ng-template #pdfIcon>
+                  <mat-icon>picture_as_pdf</mat-icon>
+                </ng-template>
               </a>
               <span *ngIf="!user.photoUrl">-</span>
             </td>
