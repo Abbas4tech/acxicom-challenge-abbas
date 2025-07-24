@@ -1,5 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -16,6 +21,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
+import { ProfileFormData } from '../../lib/types';
 
 @Component({
   selector: 'app-profile-form',
@@ -34,9 +40,10 @@ import { MatTableModule } from '@angular/material/table';
     MatButtonModule,
     MatSelectModule,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileFormComponent {
-  profileForm: FormGroup;
+  profileForm: FormGroup<ProfileFormData>;
   selectedFile: File | null = null;
 
   readonly dialogRef = inject(MatDialogRef<ProfileFormComponent>);
@@ -54,7 +61,10 @@ export class ProfileFormComponent {
     'C#',
   ];
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private _changeDetection: ChangeDetectorRef
+  ) {
     this.profileForm = this.createForm();
   }
 
@@ -80,7 +90,8 @@ export class ProfileFormComponent {
 
   addUser() {
     if (this.profileForm.valid && this.selectedFile) {
-      console.log(this.profileForm.value);
+      this.dialogRef.close(this.profileForm.value);
+      this._changeDetection.detectChanges();
     }
   }
 
