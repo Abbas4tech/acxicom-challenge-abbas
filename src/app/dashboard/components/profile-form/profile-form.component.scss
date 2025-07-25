@@ -28,8 +28,7 @@
 
     .photo-upload {
       display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      flex-direction: column;
 
       .photo-preview {
         width: 100px;
@@ -74,8 +73,6 @@
   /* ... existing styles ... */
 
   .photo-upload {
-    margin-bottom: 16px;
-
     mat-label {
       display: block;
       margin-bottom: 8px;
